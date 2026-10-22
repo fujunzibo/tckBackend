@@ -13,6 +13,7 @@ exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const jwt_1 = require("@nestjs/jwt");
+const viem_1 = require("viem");
 const prisma_service_1 = require("../prisma/prisma.service");
 const ledger_service_1 = require("../assets/ledger.service");
 const errors_1 = require("../common/errors");
@@ -91,6 +92,132 @@ let AuthService = class AuthService {
                 resumeSecret,
             };
         });
+    }
+    async walletNonce(dto, ip, originHeader, refererHeader) {
+        await this.throttle(ip, "wallet-nonce", 30);
+        const walletAddress = this.walletAddress(dto.walletAddress);
+        const nonce = (0, util_1.secret)();
+        const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+        const { domain, uri } = this.signInSite(originHeader, refererHeader);
+        const message = [
+            `${domain} wants you to sign in with your Ethereum account:`,
+            walletAddress,
+            "",
+            "Sign in to TCK Wins. This request does not trigger a transaction or cost gas.",
+            "",
+            `URI: ${uri}`,
+            "Version: 1",
+            `Chain ID: ${dto.chainId}`,
+            `Nonce: ${nonce}`,
+            `Issued At: ${new Date().toISOString()}`,
+            `Expiration Time: ${expiresAt.toISOString()}`,
+        ].join("\n");
+        await this.db.walletChallenge.deleteMany({
+            where: { expiresAt: { lt: new Date() } },
+        });
+        await this.db.walletChallenge.create({
+            data: {
+                nonce,
+                walletAddress,
+                chainId: dto.chainId,
+                message,
+                expiresAt,
+            },
+        });
+        return { nonce, message, expiresAt: expiresAt.toISOString() };
+    }
+    async walletLogin(dto, ip) {
+        await this.throttle(ip, "wallet-login", 20);
+        const walletAddress = this.walletAddress(dto.walletAddress);
+        return this.db.serial(async (tx) => {
+            await this.db.lock(tx, `wallet-login:${walletAddress.toLowerCase()}`);
+            const challenge = await tx.walletChallenge.findUnique({
+                where: { nonce: dto.nonce },
+            });
+            if (!challenge ||
+                challenge.consumedAt ||
+                challenge.expiresAt <= new Date() ||
+                challenge.walletAddress !== walletAddress)
+                (0, errors_1.fail)(401, "UNAUTHORIZED", "Sign-in challenge expired");
+            let valid = false;
+            try {
+                valid = await (0, viem_1.verifyMessage)({
+                    address: walletAddress,
+                    message: challenge.message,
+                    signature: dto.signature,
+                });
+            }
+            catch {
+                valid = false;
+            }
+            if (!valid)
+                (0, errors_1.fail)(401, "UNAUTHORIZED", "Wallet signature is invalid");
+            const consumed = await tx.walletChallenge.updateMany({
+                where: { nonce: dto.nonce, consumedAt: null },
+                data: { consumedAt: new Date() },
+            });
+            if (consumed.count !== 1)
+                (0, errors_1.fail)(401, "UNAUTHORIZED", "Sign-in challenge expired");
+            let user = await tx.user.findUnique({ where: { walletAddress } });
+            if (!user) {
+                user = await tx.user.create({
+                    data: {
+                        nickname: `${walletAddress.slice(0, 6)}-${walletAddress.slice(-4)}`,
+                        walletAddress,
+                        invitationCode: (0, util_1.secret)().slice(0, 12).toUpperCase(),
+                    },
+                });
+                await tx.identity.create({
+                    data: {
+                        provider: "wallet",
+                        subject: walletAddress.toLowerCase(),
+                        userId: user.id,
+                    },
+                });
+                await this.ledger.signup(tx, user.id);
+                if (dto.ref)
+                    await this.bind(tx, user.id, dto.ref, false);
+                user = await tx.user.findUniqueOrThrow({ where: { id: user.id } });
+            }
+            if (user.status !== "normal")
+                (0, errors_1.fail)(403, "USER_FROZEN", "Account is unavailable");
+            return {
+                ...(await this.issue(tx, user.id, "user")),
+                user: (0, views_1.userView)(user),
+            };
+        });
+    }
+    signInSite(originHeader, refererHeader) {
+        const allowed = this.config
+            .get("APP_ORIGIN", "http://127.0.0.1:3001")
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean);
+        const origin = this.callerOrigin(originHeader, refererHeader);
+        if (!origin || !allowed.includes(origin))
+            (0, errors_1.fail)(422, "VALIDATION_ERROR", "Sign-in origin is not allowed");
+        const url = new URL(origin);
+        if (url.origin !== origin || !["http:", "https:"].includes(url.protocol))
+            (0, errors_1.fail)(422, "VALIDATION_ERROR", "Sign-in origin is not allowed");
+        return { domain: url.host, uri: url.origin };
+    }
+    callerOrigin(originHeader, refererHeader) {
+        const origin = originHeader?.trim();
+        if (origin)
+            return origin;
+        if (!refererHeader)
+            return;
+        try {
+            return new URL(refererHeader).origin;
+        }
+        catch {
+            return;
+        }
+    }
+    walletAddress(value) {
+        if (!(0, viem_1.isAddress)(value))
+            (0, errors_1.fail)(422, "VALIDATION_ERROR", "Invalid wallet address");
+        return (0, viem_1.getAddress)(value);
     }
     async adminLogin(dto, ip, requestId) {
         await this.throttle(ip, "admin-login", 10);

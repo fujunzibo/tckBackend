@@ -31,9 +31,9 @@ export declare class PublicController {
         assets: {
             symbol: string;
             id: string;
-            platformMode: string;
-            decimals: number;
             chainId: string;
+            decimals: number;
+            platformMode: string;
         }[];
         apiVersion: string;
         platformMode: string;
@@ -91,17 +91,17 @@ export declare class PublicController {
     games(q: ListQuery): Promise<{
         items: {
             costAtomic: string;
-            name: string;
             id: string;
-            status: string;
-            assetId: string;
+            name: string;
+            version: number;
+            slug: string;
+            description: import("@prisma/client/runtime/client").JsonValue;
             kind: string;
             chainId: string;
-            version: number;
-            description: import("@prisma/client/runtime/client").JsonValue;
+            assetId: string;
             entryId: string;
-            slug: string;
             mode: string;
+            status: string;
             color: string;
         }[];
         pagination: {
@@ -114,17 +114,17 @@ export declare class PublicController {
     game(id: string): Promise<{
         game: {
             costAtomic: string;
-            name: string;
             id: string;
-            status: string;
-            assetId: string;
+            name: string;
+            version: number;
+            slug: string;
+            description: import("@prisma/client/runtime/client").JsonValue;
             kind: string;
             chainId: string;
-            version: number;
-            description: import("@prisma/client/runtime/client").JsonValue;
+            assetId: string;
             entryId: string;
-            slug: string;
             mode: string;
+            status: string;
             color: string;
         };
     }>;
@@ -133,12 +133,12 @@ export declare class PublicController {
             payoutAtomic: string;
             id: string;
             createdAt: Date;
-            nickname: string;
-            actorType: string;
             assetId: string;
-            source: string;
-            gameId: string;
+            actorType: string;
             sessionId: string;
+            gameId: string;
+            nickname: string;
+            source: string;
         }[];
         hasMore: boolean;
         nextCursor: string | null;
@@ -150,15 +150,15 @@ export declare class PublicController {
             userStatus: string;
             id: string;
             createdAt: Date;
-            status: string;
             version: number;
-            title: import("@prisma/client/runtime/client").JsonValue;
             description: import("@prisma/client/runtime/client").JsonValue;
+            entryId: string;
+            status: string;
             type: string;
+            title: import("@prisma/client/runtime/client").JsonValue;
             reviewMode: string;
             startTime: Date;
             endTime: Date;
-            entryId: string;
         }[];
         pagination: {
             page: number;
@@ -174,15 +174,15 @@ export declare class PublicController {
             userStatus: string;
             id: string;
             createdAt: Date;
-            status: string;
             version: number;
-            title: import("@prisma/client/runtime/client").JsonValue;
             description: import("@prisma/client/runtime/client").JsonValue;
+            entryId: string;
+            status: string;
             type: string;
+            title: import("@prisma/client/runtime/client").JsonValue;
             reviewMode: string;
             startTime: Date;
             endTime: Date;
-            entryId: string;
         };
         record: {
             history: {
@@ -195,12 +195,12 @@ export declare class PublicController {
             rewardAmount: string;
             id: string;
             createdAt: Date;
+            version: number;
             status: string;
             userId: string;
-            proof: string;
-            version: number;
             questId: string;
             periodKey: string;
+            proof: string;
             rejectReason: string | null;
             questVersion: number;
             submittedAt: Date;
@@ -317,21 +317,21 @@ export declare class UserController {
         fighters: {
             readyAt: number;
             createdAt: string;
-            name: string;
             id: string;
+            name: string;
+            version: number;
             status: string;
             platformMode: string;
-            dataSource: string;
             actorType: string;
             userId: string;
-            refunded: boolean;
+            dataSource: string;
             style: string;
-            simulateFailure: boolean;
-            version: number;
             power: number;
             speed: number;
             defense: number;
             attempt: number;
+            simulateFailure: boolean;
+            refunded: boolean;
         }[];
         unread: number;
         completedQuests: number;
@@ -371,13 +371,13 @@ export declare class UserController {
         } | undefined;
         lots: {
             id: string;
-            expiresAt: Date | null;
             createdAt: Date;
             userId: string;
             businessKey: string;
             remaining: number;
             locked: number;
             purpose: string;
+            expiresAt: Date | null;
         }[];
         items: {
             id: string;
@@ -416,13 +416,13 @@ export declare class UserController {
         } | undefined;
         lots: {
             id: string;
-            expiresAt: Date | null;
             createdAt: Date;
             userId: string;
             businessKey: string;
             remaining: number;
             locked: number;
             purpose: string;
+            expiresAt: Date | null;
         }[];
         items: {
             id: string;
@@ -489,21 +489,21 @@ export declare class UserController {
         items: {
             readyAt: number;
             createdAt: string;
-            name: string;
             id: string;
+            name: string;
+            version: number;
             status: string;
             platformMode: string;
-            dataSource: string;
             actorType: string;
             userId: string;
-            refunded: boolean;
+            dataSource: string;
             style: string;
-            simulateFailure: boolean;
-            version: number;
             power: number;
             speed: number;
             defense: number;
             attempt: number;
+            simulateFailure: boolean;
+            refunded: boolean;
         }[];
         limit: number;
     }>;
@@ -511,21 +511,21 @@ export declare class UserController {
         fighter: {
             readyAt: number;
             createdAt: string;
-            name: string;
             id: string;
+            name: string;
+            version: number;
             status: string;
             platformMode: string;
-            dataSource: string;
             actorType: string;
             userId: string;
-            refunded: boolean;
+            dataSource: string;
             style: string;
-            simulateFailure: boolean;
-            version: number;
             power: number;
             speed: number;
             defense: number;
             attempt: number;
+            simulateFailure: boolean;
+            refunded: boolean;
         };
     }>;
     fights(r: ApiRequest, q: ListQuery): Promise<{
@@ -573,9 +573,9 @@ export declare class UserController {
             amountAtomic: string;
             id: string;
             createdAt: Date;
+            assetId: string;
             status: string;
             userId: string;
-            assetId: string;
             title: import("@prisma/client/runtime/client").JsonValue;
             questId: string;
             recordId: string;
@@ -596,13 +596,13 @@ export declare class UserController {
         items: {
             id: string;
             createdAt: Date;
+            type: string;
             userId: string;
             title: import("@prisma/client/runtime/client").JsonValue;
-            type: string;
-            eventKey: string;
-            href: string;
-            body: import("@prisma/client/runtime/client").JsonValue;
             readAt: Date | null;
+            eventKey: string;
+            body: import("@prisma/client/runtime/client").JsonValue;
+            href: string;
         }[];
         hasMore: boolean;
         nextCursor: string | null;
@@ -631,12 +631,12 @@ export declare class UserController {
             history: unknown[];
             id: string;
             createdAt: Date;
+            version: number;
             status: string;
             userId: string;
-            proof: string;
-            version: number;
             questId: string;
             periodKey: string;
+            proof: string;
             rejectReason: string | null;
             questVersion: number;
             submittedAt: Date;
@@ -679,9 +679,9 @@ export declare class UserController {
             balance: string;
             id: string;
             createdAt: Date;
-            userId: string;
             chainId: string;
             source: string;
+            userId: string;
         }[];
     }>;
     profile(dto: ProfileDto, r: ApiRequest, key?: string): Promise<{
@@ -706,13 +706,13 @@ export declare class UserController {
             decimals: number;
             maximumPayoutAtomic: string;
             id: string;
-            expiresAt: Date;
             createdAt: Date;
-            userId: string;
             assetId: string;
-            choice: string;
             gameId: string;
+            userId: string;
+            choice: string;
             ruleVersion: number;
+            expiresAt: Date;
             consumedBy: string | null;
         };
     }>;
@@ -744,42 +744,42 @@ export declare class UserController {
         fighter: {
             readyAt: number;
             createdAt: string;
-            name: string;
             id: string;
+            name: string;
+            version: number;
             status: string;
             platformMode: string;
-            dataSource: string;
             actorType: string;
             userId: string;
-            refunded: boolean;
+            dataSource: string;
             style: string;
-            simulateFailure: boolean;
-            version: number;
             power: number;
             speed: number;
             defense: number;
             attempt: number;
+            simulateFailure: boolean;
+            refunded: boolean;
         };
     }>;
     retry(id: string, dto: EmptyDto, r: ApiRequest, key?: string): Promise<{
         fighter: {
             readyAt: number;
             createdAt: string;
-            name: string;
             id: string;
+            name: string;
+            version: number;
             status: string;
             platformMode: string;
-            dataSource: string;
             actorType: string;
             userId: string;
-            refunded: boolean;
+            dataSource: string;
             style: string;
-            simulateFailure: boolean;
-            version: number;
             power: number;
             speed: number;
             defense: number;
             attempt: number;
+            simulateFailure: boolean;
+            refunded: boolean;
         };
     }>;
     fightQueue(dto: FightDto, r: ApiRequest, key?: string): Promise<{
@@ -813,12 +813,12 @@ export declare class UserController {
             rewardAmount: string;
             id: string;
             createdAt: Date;
+            version: number;
             status: string;
             userId: string;
-            proof: string;
-            version: number;
             questId: string;
             periodKey: string;
+            proof: string;
             rejectReason: string | null;
             questVersion: number;
             submittedAt: Date;
@@ -829,9 +829,9 @@ export declare class UserController {
             amountAtomic: string;
             id: string;
             createdAt: Date;
+            assetId: string;
             status: string;
             userId: string;
-            assetId: string;
             title: import("@prisma/client/runtime/client").JsonValue;
             questId: string;
             recordId: string;
@@ -843,9 +843,9 @@ export declare class UserController {
             amountAtomic: string;
             id: string;
             createdAt: Date;
+            assetId: string;
             status: string;
             userId: string;
-            assetId: string;
             title: import("@prisma/client/runtime/client").JsonValue;
             questId: string;
             recordId: string;
@@ -856,13 +856,13 @@ export declare class UserController {
         notification: {
             id: string;
             createdAt: Date;
+            type: string;
             userId: string;
             title: import("@prisma/client/runtime/client").JsonValue;
-            type: string;
-            eventKey: string;
-            href: string;
-            body: import("@prisma/client/runtime/client").JsonValue;
             readAt: Date | null;
+            eventKey: string;
+            body: import("@prisma/client/runtime/client").JsonValue;
+            href: string;
         };
     }>;
     readAll(dto: ReadAllDto, r: ApiRequest, key?: string): Promise<{

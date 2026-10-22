@@ -14,12 +14,12 @@ export declare class GamesService {
             decimals: number;
             maximumPayoutAtomic: string;
             id: string;
-            expiresAt: Date;
             createdAt: Date;
             userId: string;
+            expiresAt: Date;
             assetId: string;
-            choice: string;
             gameId: string;
+            choice: string;
             ruleVersion: number;
             consumedBy: string | null;
         };
@@ -58,14 +58,14 @@ export declare class GamesService {
             dataSource: string;
             actorType: string;
             userId: string;
-            refunded: boolean;
-            style: string;
-            simulateFailure: boolean;
             version: number;
+            style: string;
             power: number;
             speed: number;
             defense: number;
             attempt: number;
+            simulateFailure: boolean;
+            refunded: boolean;
         };
     }>;
     fight(tx: Tx, userId: string, fighterId: string): Promise<{

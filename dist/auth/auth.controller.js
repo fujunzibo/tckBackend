@@ -17,7 +17,6 @@ const openapi = require("@nestjs/swagger");
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const dto_1 = require("../common/dto");
-const errors_1 = require("../common/errors");
 const guard_1 = require("./guard");
 const auth_service_1 = require("./auth.service");
 let AuthController = class AuthController {
@@ -43,8 +42,11 @@ let AuthController = class AuthController {
     adminLogout(_dto, r) {
         return this.auth.logout(r.actor);
     }
-    walletDisabled() {
-        (0, errors_1.fail)(403, "FEATURE_DISABLED", "Real wallet authentication is reserved for P1; use the explicit demo login");
+    nonce(dto, r) {
+        return this.auth.walletNonce(dto, r.ip ?? "unknown", r.header("origin"), r.header("referer"));
+    }
+    walletLogin(dto, r) {
+        return this.auth.walletLogin(dto, r.ip ?? "unknown");
     }
 };
 exports.AuthController = AuthController;
@@ -108,12 +110,24 @@ __decorate([
 ], AuthController.prototype, "adminLogout", null);
 __decorate([
     (0, guard_1.Access)("public"),
-    (0, common_1.Post)(["auth/nonce", "auth/login"]),
+    (0, common_1.Post)("auth/nonce"),
     openapi.ApiResponse({ status: 201 }),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [dto_1.WalletNonceDto, Object]),
     __metadata("design:returntype", void 0)
-], AuthController.prototype, "walletDisabled", null);
+], AuthController.prototype, "nonce", null);
+__decorate([
+    (0, guard_1.Access)("public"),
+    (0, common_1.Post)("auth/login"),
+    openapi.ApiResponse({ status: 201 }),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [dto_1.WalletLoginDto, Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "walletLogin", null);
 exports.AuthController = AuthController = __decorate([
     (0, swagger_1.ApiTags)("Authentication"),
     (0, swagger_1.ApiBearerAuth)(),

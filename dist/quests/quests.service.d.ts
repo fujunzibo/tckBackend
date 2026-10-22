@@ -18,13 +18,13 @@ export declare class QuestsService {
         rewardGrantId: string | undefined;
         rewardAmount: string;
         id: string;
-        createdAt: Date;
         status: string;
+        createdAt: Date;
         userId: string;
-        proof: string;
         version: number;
         questId: string;
         periodKey: string;
+        proof: string;
         rejectReason: string | null;
         questVersion: number;
         submittedAt: Date;
@@ -40,13 +40,13 @@ export declare class QuestsService {
             rewardGrantId: string | undefined;
             rewardAmount: string;
             id: string;
-            createdAt: Date;
             status: string;
+            createdAt: Date;
             userId: string;
-            proof: string;
             version: number;
             questId: string;
             periodKey: string;
+            proof: string;
             rejectReason: string | null;
             questVersion: number;
             submittedAt: Date;
@@ -63,13 +63,13 @@ export declare class QuestsService {
             rewardGrantId: string | undefined;
             rewardAmount: string;
             id: string;
-            createdAt: Date;
             status: string;
+            createdAt: Date;
             userId: string;
-            proof: string;
             version: number;
             questId: string;
             periodKey: string;
+            proof: string;
             rejectReason: string | null;
             questVersion: number;
             submittedAt: Date;
@@ -80,8 +80,8 @@ export declare class QuestsService {
         reward: {
             amountAtomic: string;
             id: string;
-            createdAt: Date;
             status: string;
+            createdAt: Date;
             userId: string;
             assetId: string;
             title: Prisma.JsonValue;

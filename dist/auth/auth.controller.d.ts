@@ -1,4 +1,4 @@
-import { AdminLoginDto, EmptyDto, LoginDto } from "../common/dto";
+import { AdminLoginDto, EmptyDto, LoginDto, WalletLoginDto, WalletNonceDto } from "../common/dto";
 import { AuthService } from "./auth.service";
 import type { ApiRequest } from "./types";
 export declare class AuthController {
@@ -91,5 +91,28 @@ export declare class AuthController {
     adminLogout(_dto: EmptyDto, r: ApiRequest): Promise<{
         loggedOut: boolean;
     }>;
-    walletDisabled(): void;
+    nonce(dto: WalletNonceDto, r: ApiRequest): Promise<{
+        nonce: string;
+        message: string;
+        expiresAt: string;
+    }>;
+    walletLogin(dto: WalletLoginDto, r: ApiRequest): Promise<{
+        user: {
+            id: string;
+            nickname: string;
+            walletAddress: string;
+            invitationCode: string;
+            inviterId: string | undefined;
+            pointsExact: string;
+            level: string;
+            status: string;
+            createdAt: string;
+            platformMode: string;
+            dataSource: string;
+            actorType: string;
+        };
+        accessToken: string;
+        tokenType: string;
+        expiresIn: number;
+    }>;
 }

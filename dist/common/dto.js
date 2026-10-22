@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ListQuery = exports.EmptyDto = exports.BudgetDto = exports.BindDto = exports.ReadAllDto = exports.SettingsDto = exports.UserStatusDto = exports.StatusDto = exports.QuestDto = exports.PointsDto = exports.ReviewDto = exports.ProofDto = exports.FightDto = exports.FighterDto = exports.SessionDto = exports.QuoteDto = exports.ProfileDto = exports.AdminLoginDto = exports.LoginDto = void 0;
+exports.ListQuery = exports.EmptyDto = exports.BudgetDto = exports.BindDto = exports.ReadAllDto = exports.SettingsDto = exports.UserStatusDto = exports.StatusDto = exports.QuestDto = exports.PointsDto = exports.ReviewDto = exports.ProofDto = exports.FightDto = exports.FighterDto = exports.SessionDto = exports.QuoteDto = exports.ProfileDto = exports.AdminLoginDto = exports.WalletLoginDto = exports.WalletNonceDto = exports.LoginDto = void 0;
 const openapi = require("@nestjs/swagger");
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
@@ -42,6 +42,57 @@ __decorate([
     (0, class_validator_1.MaxLength)(32),
     __metadata("design:type", String)
 ], LoginDto.prototype, "ref", void 0);
+class WalletNonceDto {
+    walletAddress;
+    chainId;
+    static _OPENAPI_METADATA_FACTORY() {
+        return { walletAddress: { required: true, type: () => String, pattern: "^0x[\\da-fA-F]{40}$" }, chainId: { required: true, type: () => Number, minimum: 1, maximum: 2147483647 } };
+    }
+}
+exports.WalletNonceDto = WalletNonceDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Matches)(/^0x[\da-fA-F]{40}$/),
+    __metadata("design:type", String)
+], WalletNonceDto.prototype, "walletAddress", void 0);
+__decorate([
+    (0, class_transformer_1.Type)(() => Number),
+    (0, class_validator_1.IsInt)(),
+    (0, class_validator_1.Min)(1),
+    (0, class_validator_1.Max)(2147483647),
+    __metadata("design:type", Number)
+], WalletNonceDto.prototype, "chainId", void 0);
+class WalletLoginDto {
+    walletAddress;
+    nonce;
+    signature;
+    ref;
+    static _OPENAPI_METADATA_FACTORY() {
+        return { walletAddress: { required: true, type: () => String, pattern: "^0x[\\da-fA-F]{40}$" }, nonce: { required: true, type: () => String, pattern: "^[a-f0-9]{64}$" }, signature: { required: true, type: () => String, pattern: "^0x[\\da-fA-F]{130}$" }, ref: { required: false, type: () => String, maxLength: 32 } };
+    }
+}
+exports.WalletLoginDto = WalletLoginDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Matches)(/^0x[\da-fA-F]{40}$/),
+    __metadata("design:type", String)
+], WalletLoginDto.prototype, "walletAddress", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Matches)(/^[a-f0-9]{64}$/),
+    __metadata("design:type", String)
+], WalletLoginDto.prototype, "nonce", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Matches)(/^0x[\da-fA-F]{130}$/),
+    __metadata("design:type", String)
+], WalletLoginDto.prototype, "signature", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(32),
+    __metadata("design:type", String)
+], WalletLoginDto.prototype, "ref", void 0);
 class AdminLoginDto {
     username;
     password;

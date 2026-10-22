@@ -6,10 +6,10 @@
     "node": ">=22.14.0"
   },
   "scripts": {
-    "build": "nest build",
-    "start": "node dist/main.js",
-    "start:dev": "nest start --watch",
-    "start:worker": "node dist/worker.js",
+    "build": "node init && nest build",
+    "start": "node init && node dist/main.js",
+    "start:dev": "node init && nest start --watch",
+    "start:worker": "node init && node dist/worker.js",
     "lint": "eslint src",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",

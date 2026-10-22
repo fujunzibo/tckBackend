@@ -1,7 +1,12 @@
 import { Body, Controller, Get, Post, Req } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
-import { AdminLoginDto, EmptyDto, LoginDto } from "../common/dto";
-import { fail } from "../common/errors";
+import {
+  AdminLoginDto,
+  EmptyDto,
+  LoginDto,
+  WalletLoginDto,
+  WalletNonceDto,
+} from "../common/dto";
 import { Access } from "./guard";
 import { AuthService } from "./auth.service";
 import type { ApiRequest } from "./types";
@@ -40,11 +45,21 @@ export class AuthController {
   ) {
     return this.auth.logout(r.actor!);
   }
-  @Access("public") @Post(["auth/nonce", "auth/login"]) walletDisabled() {
-    fail(
-      403,
-      "FEATURE_DISABLED",
-      "Real wallet authentication is reserved for P1; use the explicit demo login",
+  @Access("public") @Post("auth/nonce") nonce(
+    @Body() dto: WalletNonceDto,
+    @Req() r: ApiRequest,
+  ) {
+    return this.auth.walletNonce(
+      dto,
+      r.ip ?? "unknown",
+      r.header("origin"),
+      r.header("referer"),
     );
+  }
+  @Access("public") @Post("auth/login") walletLogin(
+    @Body() dto: WalletLoginDto,
+    @Req() r: ApiRequest,
+  ) {
+    return this.auth.walletLogin(dto, r.ip ?? "unknown");
   }
 }

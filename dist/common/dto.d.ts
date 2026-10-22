@@ -3,6 +3,16 @@ export declare class LoginDto {
     resumeSecret?: string;
     ref?: string;
 }
+export declare class WalletNonceDto {
+    walletAddress: string;
+    chainId: number;
+}
+export declare class WalletLoginDto {
+    walletAddress: string;
+    nonce: string;
+    signature: string;
+    ref?: string;
+}
 export declare class AdminLoginDto {
     username: string;
     password: string;

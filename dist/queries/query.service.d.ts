@@ -23,8 +23,8 @@ export declare class QueryService {
             symbol: string;
             id: string;
             platformMode: string;
-            decimals: number;
             chainId: string;
+            decimals: number;
         }[];
         apiVersion: string;
         platformMode: string;
@@ -72,13 +72,13 @@ export declare class QueryService {
             name: string;
             id: string;
             status: string;
-            assetId: string;
-            kind: string;
             chainId: string;
             version: number;
-            description: Prisma.JsonValue;
-            entryId: string;
             slug: string;
+            description: Prisma.JsonValue;
+            kind: string;
+            assetId: string;
+            entryId: string;
             mode: string;
             color: string;
         }[];
@@ -95,13 +95,13 @@ export declare class QueryService {
             name: string;
             id: string;
             status: string;
-            assetId: string;
-            kind: string;
             chainId: string;
             version: number;
-            description: Prisma.JsonValue;
-            entryId: string;
             slug: string;
+            description: Prisma.JsonValue;
+            kind: string;
+            assetId: string;
+            entryId: string;
             mode: string;
             color: string;
         };
@@ -110,13 +110,13 @@ export declare class QueryService {
         items: {
             payoutAtomic: string;
             id: string;
-            createdAt: Date;
             nickname: string;
             actorType: string;
+            createdAt: Date;
             assetId: string;
-            source: string;
-            gameId: string;
             sessionId: string;
+            gameId: string;
+            source: string;
         }[];
         hasMore: boolean;
         nextCursor: string | null;
@@ -175,14 +175,14 @@ export declare class QueryService {
             dataSource: string;
             actorType: string;
             userId: string;
-            refunded: boolean;
-            style: string;
-            simulateFailure: boolean;
             version: number;
+            style: string;
             power: number;
             speed: number;
             defense: number;
             attempt: number;
+            simulateFailure: boolean;
+            refunded: boolean;
         }[];
         unread: number;
         completedQuests: number;
@@ -222,9 +222,9 @@ export declare class QueryService {
         } | undefined;
         lots: {
             id: string;
-            expiresAt: Date | null;
             createdAt: Date;
             userId: string;
+            expiresAt: Date | null;
             businessKey: string;
             remaining: number;
             locked: number;
@@ -302,14 +302,14 @@ export declare class QueryService {
             dataSource: string;
             actorType: string;
             userId: string;
-            refunded: boolean;
-            style: string;
-            simulateFailure: boolean;
             version: number;
+            style: string;
             power: number;
             speed: number;
             defense: number;
             attempt: number;
+            simulateFailure: boolean;
+            refunded: boolean;
         }[];
         limit: number;
     }>;
@@ -324,14 +324,14 @@ export declare class QueryService {
             dataSource: string;
             actorType: string;
             userId: string;
-            refunded: boolean;
-            style: string;
-            simulateFailure: boolean;
             version: number;
+            style: string;
             power: number;
             speed: number;
             defense: number;
             attempt: number;
+            simulateFailure: boolean;
+            refunded: boolean;
         };
     }>;
     fights(userId: string, q: ListQuery): Promise<{
@@ -380,16 +380,16 @@ export declare class QueryService {
             rewardType: string;
             userStatus: string;
             id: string;
-            createdAt: Date;
             status: string;
+            createdAt: Date;
             version: number;
-            title: Prisma.JsonValue;
             description: Prisma.JsonValue;
+            entryId: string;
             type: string;
+            title: Prisma.JsonValue;
             reviewMode: string;
             startTime: Date;
             endTime: Date;
-            entryId: string;
         }[];
         pagination: {
             page: number;
@@ -404,16 +404,16 @@ export declare class QueryService {
             rewardType: string;
             userStatus: string;
             id: string;
-            createdAt: Date;
             status: string;
+            createdAt: Date;
             version: number;
-            title: Prisma.JsonValue;
             description: Prisma.JsonValue;
+            entryId: string;
             type: string;
+            title: Prisma.JsonValue;
             reviewMode: string;
             startTime: Date;
             endTime: Date;
-            entryId: string;
         };
         record: {
             history: {
@@ -425,13 +425,13 @@ export declare class QueryService {
             rewardGrantId: string | undefined;
             rewardAmount: string;
             id: string;
-            createdAt: Date;
             status: string;
+            createdAt: Date;
             userId: string;
-            proof: string;
             version: number;
             questId: string;
             periodKey: string;
+            proof: string;
             rejectReason: string | null;
             questVersion: number;
             submittedAt: Date;
@@ -441,8 +441,8 @@ export declare class QueryService {
         items: {
             amountAtomic: string;
             id: string;
-            createdAt: Date;
             status: string;
+            createdAt: Date;
             userId: string;
             assetId: string;
             title: Prisma.JsonValue;
@@ -463,12 +463,12 @@ export declare class QueryService {
             id: string;
             createdAt: Date;
             userId: string;
-            title: Prisma.JsonValue;
             type: string;
-            eventKey: string;
-            href: string;
-            body: Prisma.JsonValue;
+            title: Prisma.JsonValue;
             readAt: Date | null;
+            eventKey: string;
+            body: Prisma.JsonValue;
+            href: string;
         }[];
         hasMore: boolean;
         nextCursor: string | null;
@@ -499,13 +499,13 @@ export declare class QueryService {
             rewardAmount: string;
             history: unknown[];
             id: string;
-            createdAt: Date;
             status: string;
+            createdAt: Date;
             userId: string;
-            proof: string;
             version: number;
             questId: string;
             periodKey: string;
+            proof: string;
             rejectReason: string | null;
             questVersion: number;
             submittedAt: Date;
@@ -523,8 +523,8 @@ export declare class QueryService {
         invitationUrl: string;
         items: {
             id: string;
-            createdAt: Date;
             nickname: string;
+            createdAt: Date;
         }[];
         pagination: {
             page: number;

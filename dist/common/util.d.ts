@@ -12,5 +12,5 @@ export declare const copy: (zh: string, en?: string, ja?: string, ko?: string) =
     ko: string;
 };
 export declare const period: (type: string) => string;
-export declare const levelFor: (n: bigint) => "Platinum" | "Gold" | "Silver" | "Bronze";
+export declare const levelFor: (n: bigint) => "Bronze" | "Silver" | "Gold" | "Platinum";
 export declare function canonical(value: unknown): string;

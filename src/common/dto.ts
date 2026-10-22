@@ -23,6 +23,16 @@ export class LoginDto {
   @IsOptional() @IsString() @Matches(/^[a-f0-9]{64}$/) resumeSecret?: string;
   @IsOptional() @IsString() @MaxLength(32) ref?: string;
 }
+export class WalletNonceDto {
+  @IsString() @Matches(/^0x[\da-fA-F]{40}$/) walletAddress!: string;
+  @Type(() => Number) @IsInt() @Min(1) @Max(2147483647) chainId!: number;
+}
+export class WalletLoginDto {
+  @IsString() @Matches(/^0x[\da-fA-F]{40}$/) walletAddress!: string;
+  @IsString() @Matches(/^[a-f0-9]{64}$/) nonce!: string;
+  @IsString() @Matches(/^0x[\da-fA-F]{130}$/) signature!: string;
+  @IsOptional() @IsString() @MaxLength(32) ref?: string;
+}
 export class AdminLoginDto {
   @IsString() @MaxLength(64) username!: string;
   @IsString() @MinLength(1) @MaxLength(200) password!: string;

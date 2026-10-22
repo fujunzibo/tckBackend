@@ -52,13 +52,13 @@ export declare class AdminService {
             rewardGrantId: string | undefined;
             rewardAmount: string;
             id: string;
-            createdAt: Date;
             status: string;
+            createdAt: Date;
             userId: string;
-            proof: string;
             version: number;
             questId: string;
             periodKey: string;
+            proof: string;
             rejectReason: string | null;
             questVersion: number;
             submittedAt: Date;
@@ -116,14 +116,14 @@ export declare class AdminService {
             dataSource: string;
             actorType: string;
             userId: string;
-            refunded: boolean;
-            style: string;
-            simulateFailure: boolean;
             version: number;
+            style: string;
             power: number;
             speed: number;
             defense: number;
             attempt: number;
+            simulateFailure: boolean;
+            refunded: boolean;
         }[];
         unread: number;
         completedQuests: number;
@@ -135,16 +135,16 @@ export declare class AdminService {
             rewardType: string;
             userStatus: string;
             id: string;
-            createdAt: Date;
             status: string;
+            createdAt: Date;
             version: number;
-            title: Prisma.JsonValue;
             description: Prisma.JsonValue;
+            entryId: string;
             type: string;
+            title: Prisma.JsonValue;
             reviewMode: string;
             startTime: Date;
             endTime: Date;
-            entryId: string;
         }[];
         pagination: {
             page: number;
@@ -164,13 +164,13 @@ export declare class AdminService {
             rewardGrantId: string | undefined;
             rewardAmount: string;
             id: string;
-            createdAt: Date;
             status: string;
+            createdAt: Date;
             userId: string;
-            proof: string;
             version: number;
             questId: string;
             periodKey: string;
+            proof: string;
             rejectReason: string | null;
             questVersion: number;
             submittedAt: Date;
@@ -212,13 +212,13 @@ export declare class AdminService {
             name: string;
             id: string;
             status: string;
-            assetId: string;
-            kind: string;
             chainId: string;
             version: number;
-            description: Prisma.JsonValue;
-            entryId: string;
             slug: string;
+            description: Prisma.JsonValue;
+            kind: string;
+            assetId: string;
+            entryId: string;
             mode: string;
             color: string;
         }[];
@@ -232,8 +232,8 @@ export declare class AdminService {
         items: {
             amountAtomic: string;
             id: string;
-            createdAt: Date;
             status: string;
+            createdAt: Date;
             userId: string;
             assetId: string;
             title: Prisma.JsonValue;
@@ -286,14 +286,14 @@ export declare class AdminService {
             dataSource: string;
             actorType: string;
             userId: string;
-            refunded: boolean;
-            style: string;
-            simulateFailure: boolean;
             version: number;
+            style: string;
             power: number;
             speed: number;
             defense: number;
             attempt: number;
+            simulateFailure: boolean;
+            refunded: boolean;
         }[];
         pagination: {
             page: number;
@@ -329,10 +329,10 @@ export declare class AdminService {
         items: {
             id: string;
             createdAt: Date;
-            reason: string;
-            action: string;
             actor: string;
+            action: string;
             target: string;
+            reason: string;
             requestId: string;
         }[];
         pagination: {
@@ -344,9 +344,9 @@ export declare class AdminService {
     } | {
         items: {
             id: string;
-            createdAt: Date;
             nickname: string;
             inviterId: string | null;
+            createdAt: Date;
         }[];
         pagination: {
             page: number;
@@ -357,8 +357,8 @@ export declare class AdminService {
     } | {
         items: {
             id: string;
-            createdAt: Date;
             status: string;
+            createdAt: Date;
             source: string;
             checksum: string;
             rowCount: number;
@@ -372,8 +372,8 @@ export declare class AdminService {
     } | {
         items: {
             id: string;
-            createdAt: Date;
             status: string;
+            createdAt: Date;
             userId: string | null;
             sourceSystem: string;
             sourceId: string;
@@ -387,12 +387,12 @@ export declare class AdminService {
     } | {
         items: {
             id: string;
-            createdAt: Date;
             status: string;
+            createdAt: Date;
             userId: string;
-            businessKey: string;
             type: string;
             attempt: number;
+            businessKey: string;
             entityId: string;
             runAt: Date;
             leaseUntil: Date | null;
@@ -458,16 +458,16 @@ export declare class AdminService {
             rewardType: string;
             userStatus: string;
             id: string;
-            createdAt: Date;
             status: string;
+            createdAt: Date;
             version: number;
-            title: Prisma.JsonValue;
             description: Prisma.JsonValue;
+            entryId: string;
             type: string;
+            title: Prisma.JsonValue;
             reviewMode: string;
             startTime: Date;
             endTime: Date;
-            entryId: string;
         };
     }>;
     questStatus(tx: Tx, actor: Actor, id: string, dto: StatusDto): Promise<{
@@ -476,16 +476,16 @@ export declare class AdminService {
             rewardType: string;
             userStatus: string;
             id: string;
-            createdAt: Date;
             status: string;
+            createdAt: Date;
             version: number;
-            title: Prisma.JsonValue;
             description: Prisma.JsonValue;
+            entryId: string;
             type: string;
+            title: Prisma.JsonValue;
             reviewMode: string;
             startTime: Date;
             endTime: Date;
-            entryId: string;
         };
     }>;
     addBudget(tx: Tx, id: string, dto: BudgetDto): Promise<{

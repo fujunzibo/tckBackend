@@ -3,7 +3,7 @@ import { JwtService } from "@nestjs/jwt";
 import { PrismaService, type Tx } from "../prisma/prisma.service";
 import { LedgerService } from "../assets/ledger.service";
 import type { Actor } from "./types";
-import type { AdminLoginDto, LoginDto } from "../common/dto";
+import type { AdminLoginDto, LoginDto, WalletLoginDto, WalletNonceDto } from "../common/dto";
 export declare class AuthService {
     private readonly db;
     private readonly config;
@@ -32,6 +32,33 @@ export declare class AuthService {
         tokenType: string;
         expiresIn: number;
     }>;
+    walletNonce(dto: WalletNonceDto, ip: string, originHeader?: string, refererHeader?: string): Promise<{
+        nonce: string;
+        message: string;
+        expiresAt: string;
+    }>;
+    walletLogin(dto: WalletLoginDto, ip: string): Promise<{
+        user: {
+            id: string;
+            nickname: string;
+            walletAddress: string;
+            invitationCode: string;
+            inviterId: string | undefined;
+            pointsExact: string;
+            level: string;
+            status: string;
+            createdAt: string;
+            platformMode: string;
+            dataSource: string;
+            actorType: string;
+        };
+        accessToken: string;
+        tokenType: string;
+        expiresIn: number;
+    }>;
+    private signInSite;
+    private callerOrigin;
+    private walletAddress;
     adminLogin(dto: AdminLoginDto, ip: string, requestId: string): Promise<{
         admin: {
             id: string;

@@ -392,3 +392,13 @@ model LegacyIdentityLink {
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   @@unique([sourceSystem, sourceId])
 }
+model WalletChallenge {
+  nonce String @id
+  walletAddress String
+  chainId Int
+  message String
+  expiresAt DateTime @db.Timestamptz(3)
+  consumedAt DateTime? @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  @@index([expiresAt])
+}

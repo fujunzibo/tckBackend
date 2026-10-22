@@ -1,12 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
+import { getAddress, isAddress, verifyMessage } from "viem";
 import { PrismaService, type Tx } from "../prisma/prisma.service";
 import { LedgerService } from "../assets/ledger.service";
 import { fail, requireValue } from "../common/errors";
 import { hash, passwordHash, passwordMatches, secret } from "../common/util";
 import type { Actor } from "./types";
-import type { AdminLoginDto, LoginDto } from "../common/dto";
+import type {
+  AdminLoginDto,
+  LoginDto,
+  WalletLoginDto,
+  WalletNonceDto,
+} from "../common/dto";
 import { userView } from "../common/views";
 @Injectable()
 export class AuthService {
@@ -83,6 +89,133 @@ export class AuthService {
         resumeSecret,
       };
     });
+  }
+  async walletNonce(
+    dto: WalletNonceDto,
+    ip: string,
+    originHeader?: string,
+    refererHeader?: string,
+  ) {
+    await this.throttle(ip, "wallet-nonce", 30);
+    const walletAddress = this.walletAddress(dto.walletAddress);
+    const nonce = secret();
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+    const { domain, uri } = this.signInSite(originHeader, refererHeader);
+    const message = [
+      `${domain} wants you to sign in with your Ethereum account:`,
+      walletAddress,
+      "",
+      "Sign in to TCK Wins. This request does not trigger a transaction or cost gas.",
+      "",
+      `URI: ${uri}`,
+      "Version: 1",
+      `Chain ID: ${dto.chainId}`,
+      `Nonce: ${nonce}`,
+      `Issued At: ${new Date().toISOString()}`,
+      `Expiration Time: ${expiresAt.toISOString()}`,
+    ].join("\n");
+    await this.db.walletChallenge.deleteMany({
+      where: { expiresAt: { lt: new Date() } },
+    });
+    await this.db.walletChallenge.create({
+      data: {
+        nonce,
+        walletAddress,
+        chainId: dto.chainId,
+        message,
+        expiresAt,
+      },
+    });
+    return { nonce, message, expiresAt: expiresAt.toISOString() };
+  }
+  async walletLogin(dto: WalletLoginDto, ip: string) {
+    await this.throttle(ip, "wallet-login", 20);
+    const walletAddress = this.walletAddress(dto.walletAddress);
+    return this.db.serial(async (tx) => {
+      await this.db.lock(tx, `wallet-login:${walletAddress.toLowerCase()}`);
+      const challenge = await tx.walletChallenge.findUnique({
+        where: { nonce: dto.nonce },
+      });
+      if (
+        !challenge ||
+        challenge.consumedAt ||
+        challenge.expiresAt <= new Date() ||
+        challenge.walletAddress !== walletAddress
+      )
+        fail(401, "UNAUTHORIZED", "Sign-in challenge expired");
+      let valid = false;
+      try {
+        valid = await verifyMessage({
+          address: walletAddress,
+          message: challenge.message,
+          signature: dto.signature as `0x${string}`,
+        });
+      } catch {
+        valid = false;
+      }
+      if (!valid) fail(401, "UNAUTHORIZED", "Wallet signature is invalid");
+      const consumed = await tx.walletChallenge.updateMany({
+        where: { nonce: dto.nonce, consumedAt: null },
+        data: { consumedAt: new Date() },
+      });
+      if (consumed.count !== 1)
+        fail(401, "UNAUTHORIZED", "Sign-in challenge expired");
+      let user = await tx.user.findUnique({ where: { walletAddress } });
+      if (!user) {
+        user = await tx.user.create({
+          data: {
+            nickname: `${walletAddress.slice(0, 6)}-${walletAddress.slice(-4)}`,
+            walletAddress,
+            invitationCode: secret().slice(0, 12).toUpperCase(),
+          },
+        });
+        await tx.identity.create({
+          data: {
+            provider: "wallet",
+            subject: walletAddress.toLowerCase(),
+            userId: user.id,
+          },
+        });
+        await this.ledger.signup(tx, user.id);
+        if (dto.ref) await this.bind(tx, user.id, dto.ref, false);
+        user = await tx.user.findUniqueOrThrow({ where: { id: user.id } });
+      }
+      if (user.status !== "normal")
+        fail(403, "USER_FROZEN", "Account is unavailable");
+      return {
+        ...(await this.issue(tx, user.id, "user")),
+        user: userView(user),
+      };
+    });
+  }
+  private signInSite(originHeader?: string, refererHeader?: string) {
+    const allowed = this.config
+      .get<string>("APP_ORIGIN", "http://127.0.0.1:3001")
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+    const origin = this.callerOrigin(originHeader, refererHeader);
+    if (!origin || !allowed.includes(origin))
+      fail(422, "VALIDATION_ERROR", "Sign-in origin is not allowed");
+    const url = new URL(origin);
+    if (url.origin !== origin || !["http:", "https:"].includes(url.protocol))
+      fail(422, "VALIDATION_ERROR", "Sign-in origin is not allowed");
+    return { domain: url.host, uri: url.origin };
+  }
+  private callerOrigin(originHeader?: string, refererHeader?: string) {
+    const origin = originHeader?.trim();
+    if (origin) return origin;
+    if (!refererHeader) return;
+    try {
+      return new URL(refererHeader).origin;
+    } catch {
+      return;
+    }
+  }
+  private walletAddress(value: string) {
+    if (!isAddress(value))
+      fail(422, "VALIDATION_ERROR", "Invalid wallet address");
+    return getAddress(value);
   }
   async adminLogin(dto: AdminLoginDto, ip: string, requestId: string) {
     await this.throttle(ip, "admin-login", 10);
